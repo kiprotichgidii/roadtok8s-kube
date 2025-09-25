@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: postgres
 spec:
-  replicas:
+  replicas: 3
   selector:
     matchLabels:
       app: postgres
