@@ -1,0 +1,35 @@
+name: Deploy K8s apps
+on:
+  workflow_dispatch:
+#  push:
+jobs:
+  verify_service_account:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo Code
+        uses: actions/checkout@v3
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+      - name: Create/Verify `.kube` directory
+        run: |
+          mkdir -p ~/.kube
+      - name: Create kubeconfig file
+        run: |
+          echo "${{ secrets.KUBECONFIG_DATA }}" > ~/.kube/config
+      - name: Verify access to the K8s cluster
+        run: |
+          kubectl get nodes
+      - name: Echo Running Pods
+        run: |
+          kubectl get pods -A
+      - name: Get Deployments
+        run: |
+          kubectl get deployments -A
+      - name: Apply App Changes
+        run: |
+          kubectl apply -f ./app/
+      - name: Rollout apps
+        run: |
+          kubectl rollout restart deployment -n default js-deploy
+          kubectl rollout restart deployment -n default py-deploy
