@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StategulfulSet
+metadata:
+  name: postgres
+spec:
+  replicas:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      intiContainers:
+      - name: delete-lots+found
+        image: alpine:latest
+        command: ['sh', '-c', 'rm -rf /mnt/lost+found']
+        volumeMounts:
+        - name: db-vol
+          mountPath: /mnt
+      containers:
+      - name: postgres-container
+        image: postgres:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: DB_NAME
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef: 
+              name: postgres-db-secret
+              key: DB_PASSWORD
+        volumeMounts:
+        - name: db-vol
+          mountPath: /var/lib/postgresql/data
+          
+  volumeClaimTemplates:
+  - metadata:
+      name: db-vol
+    spec:
+      storageClassName: standard
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
