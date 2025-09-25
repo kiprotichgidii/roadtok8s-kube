@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StategulfulSet
+kind: StatefulSet
 metadata:
   name: postgres
 spec:
@@ -12,8 +12,8 @@ spec:
       labels:
         app: postgres
     spec:
-      intiContainers:
-      - name: delete-lots+found
+      initContainers:
+      - name: delete-lots-found
         image: alpine:latest
         command: ['sh', '-c', 'rm -rf /mnt/lost+found']
         volumeMounts:
@@ -44,7 +44,7 @@ spec:
         volumeMounts:
         - name: db-vol
           mountPath: /var/lib/postgresql/data
-          
+
   volumeClaimTemplates:
   - metadata:
       name: db-vol
