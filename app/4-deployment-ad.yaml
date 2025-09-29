@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ad-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ad-deploy
+  template:
+    metadata:
+      labels:
+        app: ad-deploy
+    spec:
+      containers:
+      - name: rk8s-ad
+        image: gedionkip/devops:advicemate
+        ports:
+        - name: http-port
+          containerPort: 80
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: rk8s-apps
+              key: AD_PORT
+        envFrom:
+        - configMapRef:
+            name: rk8s-apps

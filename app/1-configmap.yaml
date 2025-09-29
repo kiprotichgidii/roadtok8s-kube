@@ -7,3 +7,5 @@ data:
   PY_PORT: "8080"
   JS_ENDPOINT: "js-svc.default.svc.cluster.local"
   JS_PORT: "3000"
+  AD_ENDPOINT: "ad-svc.default.svc.cluster.local"
+  AD_PORT: "80"
