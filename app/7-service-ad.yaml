@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: ad-svc
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 4040
       targetPort: http-port

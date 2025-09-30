@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: py-svc
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 5000
       targetPort: http-port
